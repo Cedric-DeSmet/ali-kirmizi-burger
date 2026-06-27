@@ -668,16 +668,18 @@ function App() {
             ))
           )
         ),
-        h('div', { className: 'burger-stage relative min-h-[230px] sm:min-h-[500px] lg:min-h-[430px]', 'aria-label': '3D burger showcase' },
-          h(BurgerScene),
-          h('div', { className: 'pointer-events-none absolute left-3 top-3 w-[min(58%,220px)] rounded-md border border-white/60 bg-white/70 p-2 text-charcoal shadow-lg backdrop-blur-xl sm:left-1/2 sm:top-auto sm:-bottom-10 sm:w-[min(76%,360px)] sm:-translate-x-1/2 sm:p-3 lg:-bottom-10' },
+        h('div', { className: 'relative' },
+          h('div', { className: 'burger-stage relative min-h-[230px] sm:min-h-[500px] lg:min-h-[430px]', 'aria-label': '3D burger showcase' },
+            h(BurgerScene),
+            h('div', { className: 'pointer-events-none absolute right-2 top-2 rounded-full border border-white/15 bg-charcoal/50 px-3 py-2 text-xs font-bold text-cream/75 backdrop-blur sm:right-8 sm:top-8' },
+              copy.hero.gameHint
+            )
+          ),
+          h('div', { className: 'pointer-events-none relative mt-2 w-[min(72%,300px)] rounded-md border border-white/60 bg-white/75 p-2.5 text-charcoal shadow-lg backdrop-blur-xl sm:absolute sm:left-1/2 sm:top-auto sm:-bottom-10 sm:mt-0 sm:w-[min(76%,360px)] sm:-translate-x-1/2 sm:p-3 lg:-bottom-10' },
             h('div', { className: 'flex items-center justify-between gap-2 sm:gap-3' },
               h('div', { className: 'min-w-0' }, h('p', { className: 'truncate text-[9px] font-bold uppercase tracking-[0.14em] text-charcoal/50 sm:text-[10px]' }, copy.hero.dropLabel), h('p', { className: 'mt-0.5 truncate font-display text-sm font-bold sm:text-lg' }, copy.hero.dropName)),
               h('div', { className: 'shrink-0 rounded-full bg-ember px-2.5 py-1 text-[11px] font-black text-white sm:px-3 sm:py-1.5 sm:text-xs' }, lang === 'tr' ? '₺420' : '$17')
             )
-          ),
-          h('div', { className: 'pointer-events-none absolute right-2 top-2 rounded-full border border-white/15 bg-charcoal/50 px-3 py-2 text-xs font-bold text-cream/75 backdrop-blur sm:right-8 sm:top-8' },
-            copy.hero.gameHint
           )
         )
       ),
