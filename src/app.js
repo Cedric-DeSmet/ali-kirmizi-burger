@@ -20,7 +20,7 @@ const NAV_ITEMS = [
 const COPY = {
   tr: {
     nav: { menu: 'Menü', craft: 'Ustalık', visit: 'Ziyaret' },
-    actions: { reserve: 'Rezervasyon', order: 'Sipariş ver', menu: 'Menüyü gör', craft: 'Nasıl yapıyoruz', book: 'Masa ayır', add: 'Siparişe ekle' },
+    actions: { reserve: 'Rezervasyon', order: 'Sipariş ver', menu: 'Menüyü gör', craft: 'Nasıl yapıyoruz', book: 'Masa ayır', add: 'Siparişe ekle', clear: 'Temizle', finish: 'Siparişi tamamla' },
     hero: {
       badge: 'Sıcak plaka, eriyen cheddar',
       title: 'Ali Kırmızı Burger',
@@ -43,10 +43,20 @@ const COPY = {
       comboTitle: 'Yanına iyi gider',
       comboCopy: 'Patatesi sos havuzuna batır, milkshake’i soğuk tut, burgeri iki elle kavra.'
     },
+    order: {
+      title: 'Sipariş taslağı',
+      empty: 'Bir burger seç, sepet burada dolsun.',
+      added: 'siparişe eklendi',
+      total: 'Toplam',
+      item: 'ürün',
+      items: 'ürün',
+      note: 'Şimdilik demo sepet. Sonraki adımda gerçek ödeme veya WhatsApp siparişi bağlanabilir.'
+    },
     burgers: [
       {
         name: 'Ali Kırmızı',
         price: '₺420',
+        priceValue: 420,
         tag: 'İmza',
         description: 'Kuru dinlendirilmiş dana, füme cheddar, karamelize soğan, özel Ali sos.',
         crave: 'İsli cheddar, tatlı soğan ve bol Ali sos.',
@@ -56,6 +66,7 @@ const COPY = {
       {
         name: 'Green Fire',
         price: '₺380',
+        priceValue: 380,
         tag: 'Acılı',
         description: 'Jalapeno relish, fesleğen aioli, köz poblano, çıtır marul.',
         crave: 'Yeşil acı, ferah aioli ve çıtır marul.',
@@ -65,6 +76,7 @@ const COPY = {
       {
         name: 'Golden Melt',
         price: '₺395',
+        priceValue: 395,
         tag: 'Favori',
         description: 'Çift smash köfte, Amerikan peyniri, turşu, hardallı tereyağlı brioche.',
         crave: 'Eriyen peynir, keskin turşu ve hardallı tereyağı.',
@@ -94,7 +106,7 @@ const COPY = {
   },
   en: {
     nav: { menu: 'Menu', craft: 'Craft', visit: 'Visit' },
-    actions: { reserve: 'Reserve', order: 'Order now', menu: 'See menu', craft: 'How we cook', book: 'Book table', add: 'Add to order' },
+    actions: { reserve: 'Reserve', order: 'Order now', menu: 'See menu', craft: 'How we cook', book: 'Book table', add: 'Add to order', clear: 'Clear', finish: 'Finish order' },
     hero: {
       badge: 'Hot griddle, melting cheddar',
       title: 'Ali Kırmızı Burger',
@@ -117,10 +129,20 @@ const COPY = {
       comboTitle: 'Good on the side',
       comboCopy: 'Dip the fries, keep the shake cold, and hold the burger with both hands.'
     },
+    order: {
+      title: 'Order tray',
+      empty: 'Choose a burger and it will show up here.',
+      added: 'added to your order',
+      total: 'Total',
+      item: 'item',
+      items: 'items',
+      note: 'Demo tray for now. A real payment or WhatsApp order flow can be connected next.'
+    },
     burgers: [
       {
         name: 'Ali Kirmizi',
         price: '$17',
+        priceValue: 17,
         tag: 'Signature',
         description: 'Dry-aged beef, smoked cheddar, caramelized onion, house Ali sauce.',
         crave: 'Smoky cheddar, sweet onions, and Ali sauce.',
@@ -130,6 +152,7 @@ const COPY = {
       {
         name: 'Green Fire',
         price: '$15',
+        priceValue: 15,
         tag: 'Spicy',
         description: 'Jalapeno relish, basil aioli, charred poblanos, crisp lettuce.',
         crave: 'Green heat, cool aioli, and crisp lettuce.',
@@ -139,6 +162,7 @@ const COPY = {
       {
         name: 'Golden Melt',
         price: '$16',
+        priceValue: 16,
         tag: 'Crowd favorite',
         description: 'Double smash patties, American cheese, pickles, mustard butter bun.',
         crave: 'Melted cheese, sharp pickles, and mustard butter.',
@@ -594,7 +618,24 @@ function Header({ copy, lang, setLang }) {
 
 function App() {
   const [lang, setLang] = useState('tr');
+  const [order, setOrder] = useState([]);
+  const [lastAdded, setLastAdded] = useState(null);
   const copy = COPY[lang];
+  const orderItems = copy.burgers
+    .map((burger, index) => ({
+      burger,
+      index,
+      qty: order.filter((itemIndex) => itemIndex === index).length
+    }))
+    .filter((item) => item.qty > 0);
+  const orderCount = order.length;
+  const orderTotal = order.reduce((total, itemIndex) => total + copy.burgers[itemIndex].priceValue, 0);
+  const formattedOrderTotal = lang === 'tr' ? `₺${orderTotal}` : `$${orderTotal}`;
+  const lastAddedName = lastAdded === null ? '' : copy.burgers[lastAdded].name;
+  const addToOrder = (burgerIndex) => {
+    setOrder((currentOrder) => [...currentOrder, burgerIndex]);
+    setLastAdded(burgerIndex);
+  };
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -651,7 +692,7 @@ function App() {
           h('p', { className: 'max-w-lg text-cream/70' }, copy.menu.copy)
         ),
         h('div', { className: 'mt-12 grid gap-5 lg:grid-cols-3' },
-          copy.burgers.map((burger) => h('article', { key: burger.name, className: 'menu-card group overflow-hidden rounded-lg border border-white/10 p-4 text-charcoal shadow-2xl transition duration-300 hover:-translate-y-1 sm:p-5' },
+          copy.burgers.map((burger, index) => h('article', { key: burger.name, className: 'menu-card group overflow-hidden rounded-lg border border-white/10 p-4 text-charcoal shadow-2xl transition duration-300 hover:-translate-y-1 sm:p-5' },
             h('div', { className: 'flex items-start justify-between gap-4' }, h('span', { className: `rounded-full ${burger.color} px-3 py-1 text-xs font-black uppercase tracking-[0.14em] text-white` }, burger.tag), h('span', { className: 'font-display text-3xl font-bold' }, burger.price)),
             h('div', { className: 'relative my-5 h-60 overflow-hidden rounded-md bg-charcoal sm:h-64 lg:h-72' },
               h('img', { src: burger.image, alt: `${burger.name} burger`, className: 'h-full w-full object-cover transition duration-700 group-hover:scale-110' }),
@@ -661,11 +702,47 @@ function App() {
             h('h3', { className: 'font-display text-2xl font-bold' }, burger.name),
             h('p', { className: 'mt-3 leading-7 text-charcoal/70' }, burger.description),
             h('p', { className: 'mt-4 border-l-4 border-mustard pl-4 text-sm font-extrabold leading-6 text-charcoal' }, burger.crave),
-            h('button', { type: 'button', className: 'mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-charcoal px-5 py-4 text-sm font-black text-cream transition hover:-translate-y-0.5 hover:bg-ember' },
+            h('button', { type: 'button', className: 'mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-charcoal px-5 py-4 text-sm font-black text-cream transition hover:-translate-y-0.5 hover:bg-ember', 'aria-label': `${copy.actions.add}: ${burger.name}`, onClick: () => addToOrder(index) },
               copy.actions.add,
               h(Icon, { name: 'bag', size: 17 })
             )
           ))
+        ),
+        h('div', { id: 'order', className: 'mt-8 scroll-mt-28 rounded-lg border border-cream/15 bg-cream p-5 text-charcoal shadow-2xl sm:p-6', 'aria-live': 'polite' },
+          h('div', { className: 'flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between' },
+            h('div', null,
+              h('p', { className: 'font-bold uppercase tracking-[0.22em] text-ember' }, copy.order.title),
+              h('p', { className: 'mt-2 text-sm font-bold text-charcoal/60' },
+                orderCount ? `${orderCount} ${orderCount === 1 ? copy.order.item : copy.order.items}` : copy.order.empty
+              )
+            ),
+            h('div', { className: 'rounded-md bg-charcoal px-5 py-3 text-right text-cream' },
+              h('p', { className: 'text-xs font-bold uppercase tracking-[0.18em] text-cream/55' }, copy.order.total),
+              h('p', { className: 'font-display text-3xl font-bold' }, formattedOrderTotal)
+            )
+          ),
+          lastAddedName && h('p', { className: 'mt-4 rounded-md bg-mustard/30 px-4 py-3 text-sm font-extrabold text-charcoal' },
+            `${lastAddedName} ${copy.order.added}.`
+          ),
+          orderItems.length > 0 && h('div', { className: 'mt-5 grid gap-3' },
+            orderItems.map(({ burger, qty }) => h('div', { key: burger.name, className: 'flex items-center justify-between gap-3 rounded-md bg-white/70 px-4 py-3' },
+              h('div', null,
+                h('p', { className: 'font-display text-lg font-bold' }, burger.name),
+                h('p', { className: 'text-sm font-bold text-charcoal/55' }, `${qty} x ${burger.price}`)
+              ),
+              h('p', { className: 'font-display text-xl font-bold' }, lang === 'tr' ? `₺${qty * burger.priceValue}` : `$${qty * burger.priceValue}`)
+            ))
+          ),
+          h('div', { className: 'mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between' },
+            h('p', { className: 'text-sm leading-6 text-charcoal/60' }, copy.order.note),
+            h('div', { className: 'flex gap-3' },
+              h('button', { type: 'button', className: 'rounded-full border border-charcoal/20 px-5 py-3 text-sm font-black text-charcoal transition hover:border-charcoal', onClick: () => { setOrder([]); setLastAdded(null); }, disabled: orderCount === 0 }, copy.actions.clear),
+              h('a', { href: '#visit', className: `inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-black transition ${orderCount ? 'bg-ember text-white shadow-glow hover:-translate-y-0.5' : 'pointer-events-none bg-charcoal/15 text-charcoal/45'}` },
+                copy.actions.finish,
+                h(Icon, { name: 'arrow', size: 17 })
+              )
+            )
+          )
         ),
         h('div', { className: 'scrollbar-hide mt-8 flex gap-3 overflow-x-auto pb-2' }, copy.menu.sides.map((side) => h('span', { key: side, className: 'shrink-0 rounded-full border border-cream/20 px-5 py-3 font-bold text-cream/90' }, side))),
         h('div', { className: 'craving-strip mt-10 overflow-hidden rounded-lg border border-cream/15 bg-cream text-charcoal shadow-2xl md:grid md:grid-cols-[0.9fr_1.1fr]' },
@@ -726,6 +803,13 @@ function App() {
         h('p', null, 'Ali Kırmızı Burger'),
         h('p', null, copy.footer)
       )
+    ),
+    orderCount > 0 && h('a', { href: '#order', className: 'fixed bottom-4 left-4 right-4 z-50 mx-auto flex max-w-md items-center justify-between gap-4 rounded-full border border-white/20 bg-charcoal px-5 py-4 text-cream shadow-2xl transition hover:-translate-y-0.5 sm:left-auto sm:right-6' },
+      h('span', { className: 'min-w-0' },
+        h('span', { className: 'block truncate text-sm font-black' }, lastAddedName ? `${lastAddedName} ${copy.order.added}.` : copy.order.title),
+        h('span', { className: 'text-xs font-bold text-cream/60' }, `${orderCount} ${orderCount === 1 ? copy.order.item : copy.order.items}`)
+      ),
+      h('span', { className: 'shrink-0 rounded-full bg-mustard px-4 py-2 font-display text-xl font-bold text-charcoal' }, formattedOrderTotal)
     )
   );
 }
