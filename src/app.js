@@ -670,10 +670,10 @@ function App() {
         ),
         h('div', { className: 'burger-stage relative min-h-[230px] sm:min-h-[500px] lg:min-h-[430px]', 'aria-label': '3D burger showcase' },
           h(BurgerScene),
-          h('div', { className: 'absolute bottom-3 left-1/2 w-[min(92%,420px)] -translate-x-1/2 rounded-md border border-white/70 bg-white/80 p-4 text-charcoal shadow-2xl backdrop-blur-xl sm:-bottom-14 lg:-bottom-12' },
-            h('div', { className: 'flex items-center justify-between gap-4' },
-              h('div', null, h('p', { className: 'text-xs font-bold uppercase tracking-[0.2em] text-charcoal/50' }, copy.hero.dropLabel), h('p', { className: 'mt-1 font-display text-xl font-bold' }, copy.hero.dropName)),
-              h('div', { className: 'rounded-full bg-ember px-4 py-2 text-sm font-black text-white' }, lang === 'tr' ? '₺420' : '$17')
+          h('div', { className: 'pointer-events-none absolute bottom-2 left-1/2 w-[min(74%,300px)] -translate-x-1/2 rounded-md border border-white/65 bg-white/75 p-3 text-charcoal shadow-xl backdrop-blur-xl sm:-bottom-10 sm:w-[min(76%,360px)] lg:-bottom-10' },
+            h('div', { className: 'flex items-center justify-between gap-3' },
+              h('div', { className: 'min-w-0' }, h('p', { className: 'truncate text-[10px] font-bold uppercase tracking-[0.16em] text-charcoal/50' }, copy.hero.dropLabel), h('p', { className: 'mt-0.5 truncate font-display text-base font-bold sm:text-lg' }, copy.hero.dropName)),
+              h('div', { className: 'shrink-0 rounded-full bg-ember px-3 py-1.5 text-xs font-black text-white' }, lang === 'tr' ? '₺420' : '$17')
             )
           ),
           h('div', { className: 'pointer-events-none absolute right-2 top-2 rounded-full border border-white/15 bg-charcoal/50 px-3 py-2 text-xs font-bold text-cream/75 backdrop-blur sm:right-8 sm:top-8' },
