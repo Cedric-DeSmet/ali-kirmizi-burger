@@ -117,7 +117,7 @@ const COPY = {
       quickBites: ['On the table in 7', 'Extra sauce', 'Crispy fries']
     },
     features: [
-      ['flame', '500F sear', 'Crisp edges, juicy center'],
+      ['flame', '260C sear', 'Crisp edges, juicy center'],
       ['chef', 'Daily brioche', 'Buttery, warm, soft'],
       ['spark', '9 sauces', 'Hot, sweet, smoky, loaded']
     ],
@@ -670,10 +670,10 @@ function App() {
         ),
         h('div', { className: 'burger-stage relative min-h-[230px] sm:min-h-[500px] lg:min-h-[430px]', 'aria-label': '3D burger showcase' },
           h(BurgerScene),
-          h('div', { className: 'pointer-events-none absolute bottom-2 left-1/2 w-[min(74%,300px)] -translate-x-1/2 rounded-md border border-white/65 bg-white/75 p-3 text-charcoal shadow-xl backdrop-blur-xl sm:-bottom-10 sm:w-[min(76%,360px)] lg:-bottom-10' },
-            h('div', { className: 'flex items-center justify-between gap-3' },
-              h('div', { className: 'min-w-0' }, h('p', { className: 'truncate text-[10px] font-bold uppercase tracking-[0.16em] text-charcoal/50' }, copy.hero.dropLabel), h('p', { className: 'mt-0.5 truncate font-display text-base font-bold sm:text-lg' }, copy.hero.dropName)),
-              h('div', { className: 'shrink-0 rounded-full bg-ember px-3 py-1.5 text-xs font-black text-white' }, lang === 'tr' ? '₺420' : '$17')
+          h('div', { className: 'pointer-events-none absolute left-3 top-3 w-[min(58%,220px)] rounded-md border border-white/60 bg-white/70 p-2 text-charcoal shadow-lg backdrop-blur-xl sm:left-1/2 sm:top-auto sm:-bottom-10 sm:w-[min(76%,360px)] sm:-translate-x-1/2 sm:p-3 lg:-bottom-10' },
+            h('div', { className: 'flex items-center justify-between gap-2 sm:gap-3' },
+              h('div', { className: 'min-w-0' }, h('p', { className: 'truncate text-[9px] font-bold uppercase tracking-[0.14em] text-charcoal/50 sm:text-[10px]' }, copy.hero.dropLabel), h('p', { className: 'mt-0.5 truncate font-display text-sm font-bold sm:text-lg' }, copy.hero.dropName)),
+              h('div', { className: 'shrink-0 rounded-full bg-ember px-2.5 py-1 text-[11px] font-black text-white sm:px-3 sm:py-1.5 sm:text-xs' }, lang === 'tr' ? '₺420' : '$17')
             )
           ),
           h('div', { className: 'pointer-events-none absolute right-2 top-2 rounded-full border border-white/15 bg-charcoal/50 px-3 py-2 text-xs font-bold text-cream/75 backdrop-blur sm:right-8 sm:top-8' },
@@ -804,7 +804,8 @@ function App() {
     h('footer', { className: 'bg-charcoal px-4 py-8 text-cream sm:px-6 lg:px-8' },
       h('div', { className: 'mx-auto flex max-w-7xl flex-col justify-between gap-4 text-sm text-cream/60 sm:flex-row' },
         h('p', null, 'Ali Kırmızı Burger'),
-        h('p', null, copy.footer)
+        h('p', null, copy.footer),
+        h('p', { className: 'text-xs text-cream/45' }, '© 2026 Cedric De Smet. Website made by Cedric De Smet.')
       )
     ),
     orderCount > 0 && h('a', { href: '#order', className: 'fixed bottom-4 left-4 right-4 z-50 mx-auto flex max-w-md items-center justify-between gap-4 rounded-full border border-white/20 bg-charcoal px-5 py-4 text-cream shadow-2xl transition hover:-translate-y-0.5 sm:left-auto sm:right-6' },
