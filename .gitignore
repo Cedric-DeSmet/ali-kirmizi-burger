@@ -1,0 +1,7 @@
+node_modules/
+.npm-cache/
+.agents/
+.codex/
+server-output.log
+server-error.log
+*.log
