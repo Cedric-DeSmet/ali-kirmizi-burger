@@ -237,7 +237,7 @@ function BurgerScene() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.domElement.style.cursor = 'grab';
-    renderer.domElement.style.touchAction = 'none';
+    renderer.domElement.style.touchAction = 'pan-y';
     mount.appendChild(renderer.domElement);
 
     const burger = new THREE.Group();
@@ -431,6 +431,7 @@ function BurgerScene() {
     };
 
     const onPointerDown = (event) => {
+      if (event.pointerType === 'touch') return;
       const mesh = pickSlice(event);
       if (!mesh) return;
 
@@ -602,14 +603,16 @@ function Header({ copy, lang, setLang }) {
         h('a', { href: '#visit', className: 'rounded-full border border-charcoal/20 px-5 py-3 text-sm font-bold transition hover:border-charcoal hover:bg-charcoal hover:text-cream' }, copy.actions.reserve),
         h('a', { href: '#menu', className: 'inline-flex items-center gap-2 rounded-full bg-ember px-5 py-3 text-sm font-bold text-white shadow-glow transition hover:-translate-y-0.5' }, copy.actions.order, ' ', h(Icon, { name: 'bag', size: 17 }))
       ),
-      h('button', { type: 'button', className: 'flex h-11 w-11 items-center justify-center rounded-full border border-charcoal/20 md:hidden', 'aria-label': 'Toggle navigation', onClick: () => setNavOpen(!navOpen) },
-        h(Icon, { name: navOpen ? 'close' : 'menu', size: 20 })
+      h('div', { className: 'flex items-center gap-2 md:hidden' },
+        languageToggle('bg-white/70'),
+        h('button', { type: 'button', className: 'flex h-11 w-11 items-center justify-center rounded-full border border-charcoal/20', 'aria-label': 'Toggle navigation', onClick: () => setNavOpen(!navOpen) },
+          h(Icon, { name: navOpen ? 'close' : 'menu', size: 20 })
+        )
       )
     ),
     navOpen && h('div', { className: 'border-t border-charcoal/10 bg-cream px-4 py-4 md:hidden' },
       h('div', { className: 'flex flex-col gap-2' },
         ...NAV_ITEMS.map(([id, key]) => h('a', { key: id, href: `#${id}`, className: 'rounded-md px-3 py-3 text-base font-bold', onClick: () => setNavOpen(false) }, copy.nav[key])),
-        languageToggle('mt-2 justify-center'),
         h('a', { href: '#visit', className: 'mt-2 rounded-full bg-charcoal px-4 py-3 text-center font-bold text-cream', onClick: () => setNavOpen(false) }, copy.actions.reserve)
       )
     )
@@ -667,7 +670,7 @@ function App() {
         ),
         h('div', { className: 'burger-stage relative min-h-[230px] sm:min-h-[500px] lg:min-h-[430px]', 'aria-label': '3D burger showcase' },
           h(BurgerScene),
-          h('div', { className: 'absolute -bottom-14 left-1/2 w-[min(92%,420px)] -translate-x-1/2 rounded-md border border-white/70 bg-white/80 p-4 text-charcoal shadow-2xl backdrop-blur-xl sm:-bottom-14 lg:-bottom-12' },
+          h('div', { className: 'absolute bottom-3 left-1/2 w-[min(92%,420px)] -translate-x-1/2 rounded-md border border-white/70 bg-white/80 p-4 text-charcoal shadow-2xl backdrop-blur-xl sm:-bottom-14 lg:-bottom-12' },
             h('div', { className: 'flex items-center justify-between gap-4' },
               h('div', null, h('p', { className: 'text-xs font-bold uppercase tracking-[0.2em] text-charcoal/50' }, copy.hero.dropLabel), h('p', { className: 'mt-1 font-display text-xl font-bold' }, copy.hero.dropName)),
               h('div', { className: 'rounded-full bg-ember px-4 py-2 text-sm font-black text-white' }, lang === 'tr' ? '₺420' : '$17')
